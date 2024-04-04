@@ -1,0 +1,58 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LLM SQL</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h1>Select DB</h1>
+                </div>
+                <div class="sidebar-body">
+                    <ul>
+                        
+                    </ul>
+                </div>
+            </div>
+            <div class="content">
+                <div class="content-header">
+                    <h1>LLM SQL</h1>
+                </div>
+                <div class="content-body">
+                    {% for chat in chat_history %}
+                        <div class="chat">
+                            <div class="img"></div>
+                            <div class="chat-body">
+                                <h4>You</h4>
+                                <p>{{ chat.user }}</p>
+                            </div>
+                        </div>
+                        <div class="chat">
+                            <div class="img"></div>
+                            <div class="chat-body">
+                                <h4>LLM SQL</h4>
+                                <p>{{ chat.bot }}</p>
+                            </div>
+                        </div>
+                        <div class="result">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="content-foot">
+                    <form action="{{ url_for('home') }}" method="post">
+                        <textarea class="qry-in" rows="1" name="nl_query" value = "" placeholder="Enter your query here..." autocomplete="off"></textarea>
+                        <button class="qry-ex" type="submit">Run</button>
+                    </form>
+                    <p>developed by Heap Undercut.</p>
+                </div>
+            </div>
+        </div>
+
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </body>
+    </html>

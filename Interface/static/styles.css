@@ -121,6 +121,14 @@ body {
     overflow-y: auto;
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
+    grid-auto-rows: max-content;
+}
+
+.welcome {
+    grid-column: 1/-1;
+    place-content: center;
+    margin: auto;
+    text-align: center;
 }
 
 .chat {

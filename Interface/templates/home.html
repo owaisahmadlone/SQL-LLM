@@ -24,6 +24,13 @@
                     <h1>LLM SQL</h1>
                 </div>
                 <div class="content-body">
+                    {% if chat_history|length == 0 %}
+                        <div class="welcome">
+                            <h2>Welcome to LLM SQL!</h2>
+                            <br>
+                            <h4>Start by typing your query in the box below.</h4>
+                        </div>
+                    {% endif %}
                     {% for chat in chat_history %}
                         <div class="chat">
                             <div class="img green"></div>

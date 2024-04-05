@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, redirect, request, url_for
 # import model
 # import dbms connector
 
@@ -35,11 +35,11 @@ def home():
         # add entry to chat history
         chat_history.append(chat_entry)
 
-        if len(chat_history) > 5:
+        if len(chat_history) > 10:
             chat_history.pop(0)
 
         # pass results to template
-        return render_template('home.html', chat_history=chat_history)
+        return redirect(url_for('home', chat_history=chat_history))
     
     else:
         return render_template('home.html', chat_history=chat_history)

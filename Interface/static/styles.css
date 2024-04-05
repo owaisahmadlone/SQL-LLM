@@ -13,6 +13,7 @@ body {
 }
 
 .container {
+    height: 100%;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 5fr;
@@ -35,8 +36,12 @@ body {
 /* CONTENT */
 
 .content {
+    display: grid;
+    height: 100%;
     padding: 0 1rem;
     background-color: #dfefff;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
 }
 
 /* CONTENT HEADER */
@@ -49,50 +54,77 @@ body {
 /* CONTENT FOOTER */
 
 .content-foot {
-    width: 60%;
-    font-size: 0.8rem;
-    padding: 0.5rem;
-    padding-bottom: 2rem;
-    display: grid;
-    place-content: center;
-}
-
-.content-foot > form {
     width: 100%;
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    align-items: center;
 }
 
-.content-foot textarea {
-    resize: none;   
+.content-foot p {
+    font-size: 0.8rem;
     padding: 0.5rem;
-    border: 1px solid #ced4da;
-    border-radius: 10px;
-    flex: 1;
-    font-size: 1rem;
-    max-height: 10rem;
 }
 
-.content-foot button {
-    height: fit-content;
-    padding: 1rem 2rem;
+.content-foot form {
+    width: 60%;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    border: 1px solid #007bff;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+#qry-in {
+    resize: none;
+    background-color: transparent;
+    border: none;
+    flex: 1;
+    padding: 0.5rem;
+    margin: auto;
+    font-size: 1rem;
+}
+
+#qry-in:focus {
+    outline: none;
+}
+
+#qry-ex {
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 1rem;
+    padding: 1rem 2rem;
     cursor: pointer;
+    height: fit-content;
+    margin-top: auto;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 5px;
 }
 
 /* CONTENT BODY */
 
 .content-body {
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    overflow: scroll;
+    width: 100%;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
 }
 
 .chat {
+    grid-column: 2;
     padding: 1rem;
     display: flex;
     gap: 0.5rem;
@@ -106,5 +138,12 @@ body {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
+}
+
+.green {
+    background-color: #73d100;
+}
+
+.blue {
     background-color: #007bff;
 }

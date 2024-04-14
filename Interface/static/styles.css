@@ -148,10 +148,12 @@ body {
 }
 
 .welcome {
+    height: 50vh;
     grid-column: 1/-1;
-    place-content: center;
-    margin: auto;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .chat {

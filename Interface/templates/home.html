@@ -11,11 +11,18 @@
         <div class="container">
             <div class="sidebar">
                 <div class="sidebar-header">
-                    <h1>Select DB</h1>
+                    <h1>DB list</h1>
                 </div>
                 <div class="sidebar-body">
                     <ul>
-                        
+                        {% for db in databases %}
+                        {% if db_id == db.id %}
+                        <li class="db-list-el active" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
+                        {% else %}
+                        <li class="db-list-el" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
+                        {% endif %}
+                        {% endfor %}
+                        <li class="db-list-el" id="new-db" onclick="updateDbId('-1')">Close DB</li>
                     </ul>
                 </div>
             </div>
@@ -42,11 +49,19 @@
                         <div class="chat">
                             <div class="img blue"></div>
                             <div class="chat-body">
-                                <h4>LLM SQL</h4>
+                                <h4>LLM SQL 
+                                {% if db_id != -1 %}
+                                 : {{ databases[db_id].name }}
+                                {% endif %}
+                                </h4>
                                 <p>{{ chat.bot }}</p>
                             </div>
                         </div>
                         <div class="chat">
+                            <div class="img dummy"></div>
+                            <div class="chat-body">
+                                {{ chat.result | safe }}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

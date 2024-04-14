@@ -33,6 +33,29 @@ body {
     padding: 0.5rem;
 }
 
+.db-list-el {
+    width: 100%;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+    border-radius: 10px;
+    margin: 0.5rem 0;
+}
+
+.db-list-el:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.active {
+    background-color: #007bff;
+    color: white;
+}
+
 /* CONTENT */
 
 .content {
@@ -154,4 +177,44 @@ body {
 
 .blue {
     background-color: #007bff;
+}
+
+.dummy {
+    background-color: transparent;
+}
+
+/* Table style */
+
+/* Style the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+/* Style the table header */
+th {
+    background-color: #f2f2f2;
+    padding: 0.8rem;
+    text-align: left;
+}
+
+th:hover {
+    background-color: #ddd;
+}
+
+/* Style the table body */
+td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Alternate row background color */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Hover effect on rows */
+tr:hover {
+    background-color: #f2f2f2;
 }

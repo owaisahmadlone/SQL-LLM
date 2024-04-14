@@ -1,3 +1,5 @@
+var footerResizeEvent = new Event('footerResize');
+
 function autoExpand(textArea) {
     textArea.style.height = 'auto';
 
@@ -6,7 +8,6 @@ function autoExpand(textArea) {
 
     textArea.rows = rows;
     
-    var footerResizeEvent = new Event('footerResize');
     document.querySelector('.content-foot').dispatchEvent(footerResizeEvent);
 }
 
@@ -21,3 +22,17 @@ function setMaxHeight() {
 window.addEventListener('resize', setMaxHeight);
 document.querySelector('.content-foot').addEventListener('footerResize', setMaxHeight);
 setMaxHeight();
+
+function updateDbId(id) {
+    // Send AJAX request to Flask backend
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/update_db_id", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log("DB ID updated successfully");
+            window.location.reload();
+        }
+    };
+    xhr.send(JSON.stringify({ id: id }));
+}

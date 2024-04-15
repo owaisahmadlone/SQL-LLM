@@ -38,7 +38,15 @@
                             <h4>Start by typing your query in the box below.</h4>
                         </div>
                     {% endif %}
+                    <div class="chat">
+                        <div class="img dummy"></div>
+                        <div class="chat-body">
+                            <h4>Schema</h4>
+                            <p>{{ schema | safe }}</p>
+                        </div>
+                    </div>
                     {% for chat in chat_history %}
+                        
                         <div class="chat">
                             <div class="img green"></div>
                             <div class="chat-body">

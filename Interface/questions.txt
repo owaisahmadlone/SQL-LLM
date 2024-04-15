@@ -1,0 +1,6 @@
+list the names of students who are participating in event "Workshop on AI"
+list all events of type "Music"
+list the event with venue as "Main Building"
+list the number of students from every department
+display all events sorted alphabetically
+retrieve all events where the winner is known

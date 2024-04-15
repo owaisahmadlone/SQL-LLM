@@ -52,7 +52,18 @@ preset_schemas = [
         "id": 0,
         "db_name": "21CS10014",
         "name": "Fest Management System",
-        "schema": "ADMIN: USERNAME (PRIMARY KEY) (text); PASS (text)//STUDENT: FEST_ID (PRIMARY KEY) (numeric); NAME (text); ROLL (text); DEPT (text); PASS (text)//EVENT: EVENT_ID (PRIMARY KEY) (numeric); EVENT_NAME (text); EVENT_DATE (date); EVENT_TIME (time); EVENT_VENUE (text); EVENT_TYPE (text); EVENT_DESCRIPTION (text); EVENT_WINNER (numeric)//ACCOMODATION: ACC_ID (numeric) (PRIMARY KEY); NAME (text); CAPACITY (numeric)//EXT_PARTICIPANT: FEST_ID (numeric) (PRIMARY KEY); NAME (text); COLLEGE (text); ACC_ID (numeric); PASS (text)//ORGANISING: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//VOLUNTEERING: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//PARTICIPATING_EXT: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//PARTICIPATING_INT: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)"
+        "schema": "ADMIN: USERNAME (PRIMARY KEY) (text); PASS (text)//STUDENT: FEST_ID (PRIMARY KEY) (numeric); NAME (text); ROLL (text); DEPT (text); PASS (text)//EVENT: EVENT_ID (PRIMARY KEY) (numeric); EVENT_NAME (text); EVENT_DATE (date); EVENT_TIME (time); EVENT_VENUE (text); EVENT_TYPE (text); EVENT_DESCRIPTION (text); EVENT_WINNER (numeric)//ACCOMODATION: ACC_ID (numeric) (PRIMARY KEY); NAME (text); CAPACITY (numeric)//EXT_PARTICIPANT: FEST_ID (numeric) (PRIMARY KEY); NAME (text); COLLEGE (text); ACC_ID (numeric); PASS (text)//ORGANISING: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//VOLUNTEERING: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//PARTICIPATING_EXT: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//PARTICIPATING_INT: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)",
+        "df" : [
+    {'Table': 'ADMIN', 'Attributes': ['USERNAME (PRIMARY KEY) (text)', 'PASS (text)']},
+    {'Table': 'STUDENT', 'Attributes': ['FEST_ID (PRIMARY KEY) (numeric)', 'NAME (text)', 'ROLL (text)', 'DEPT (text)', 'PASS (text)']},
+    {'Table': 'EVENT', 'Attributes': ['EVENT_ID (PRIMARY KEY) (numeric)', 'EVENT_NAME (text)', 'EVENT_DATE (date)', 'EVENT_TIME (time)', 'EVENT_VENUE (text)', 'EVENT_TYPE (text)', 'EVENT_DESCRIPTION (text)', 'EVENT_WINNER (numeric)']},
+    {'Table': 'ACCOMODATION', 'Attributes': ['ACC_ID (numeric) (PRIMARY KEY)', 'NAME (text)', 'CAPACITY (numeric)']},
+    {'Table': 'EXT_PARTICIPANT', 'Attributes': ['FEST_ID (numeric) (PRIMARY KEY)', 'NAME (text)', 'COLLEGE (text)', 'ACC_ID (numeric)', 'PASS (text)']},
+    {'Table': 'ORGANISING', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
+    {'Table': 'VOLUNTEERING', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
+    {'Table': 'PARTICIPATING_EXT', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
+    {'Table': 'PARTICIPATING_INT', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']}
+]
     },
 ]
 
@@ -104,10 +115,11 @@ app.secret_key = 'my_secret_key'  # Change this to a secure secret key
 
 # consists of dictionaries of form {user, bot, result}
 chat_history = []
+schema_struct = None
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    global chat_history
+    global chat_history, schema_struct
 
     if request.method == 'POST':
         
@@ -140,14 +152,15 @@ def home():
         # add entry to chat history
         chat_history.append(chat_entry)
 
-        if len(chat_history) > 10:
+        if len(chat_history) > 1:
             chat_history.pop(0)
 
         # pass results to template
-        return redirect(url_for('home', chat_history=chat_history, databases=[{"id":db["id"], "name":db["name"]} for db in preset_schemas], db_id=db_id))
+
+        return redirect(url_for('home', chat_history=chat_history, databases=[{"id":db["id"], "name":db["name"]} for db in preset_schemas], db_id=db_id, schema = schema_struct))
     
     else:
-        return render_template('home.html', chat_history=chat_history, databases=[{"id":db["id"], "name":db["name"]} for db in preset_schemas], db_id=db_id)
+        return render_template('home.html', chat_history=chat_history, databases=[{"id":db["id"], "name":db["name"]} for db in preset_schemas], db_id=db_id, schema = schema_struct)
 
 @app.route('/update_db_id', methods=['POST'])
 def update_db_id():
@@ -160,8 +173,11 @@ def update_db_id():
     # Connect to the database
     if db_id != -1:
         connect_to_db(db_id)
+        x =  pd.DataFrame(preset_schemas[db_id]["df"])
+        schema_struct = tabulate(x, headers='keys', tablefmt='html')
     else:
         close_connection()
+        schema_struct = "<p>No schema set.</p>"
 
     return redirect(url_for('home'))
 

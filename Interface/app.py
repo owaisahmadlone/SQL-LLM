@@ -119,7 +119,7 @@ def home():
         
         # get response from model
         prompt = f"{schema} {nl_query}"
-        output = query({"inputs": prompt})
+        output = query({"inputs": prompt, "parameters": {"max_new_tokens": 200},"options": {"wait_for_model": True}})
         try:
             sql = output[0]['generated_text']
         except Exception as e:

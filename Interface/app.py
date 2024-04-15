@@ -74,7 +74,7 @@ execute SQL queries.
 """
 
 def connect_to_db(id):
-    global isDBselected, schema, conn, preset_schemas
+    global isDBselected, schema, conn, preset_schemas, schema_struct
     try:
         conn = psycopg2.connect(
             dbname=preset_schemas[id]["db_name"],
@@ -84,6 +84,8 @@ def connect_to_db(id):
         )
         isDBselected = True
         schema = preset_schemas[id]["schema"]
+        x = preset_schemas[id]["df"]
+        schema_struct = tabulate(x, headers='keys', tablefmt='html')
 
         print("Connected to the database. Schema selected.")
         print(f"Database: {preset_schemas[id]['db_name']}")
@@ -95,11 +97,12 @@ def connect_to_db(id):
         return None
 
 def close_connection():
-    global isDBselected, schema, conn
+    global isDBselected, schema, conn, schema_struct
     try:
         conn.close()
         isDBselected = False
         schema = ""
+        schema_struct = "<p>Please provide your own schema in prompt to get desired query.</p>"
         print("Connection to the database closed. Schema deselected.")
     except Exception as e:
         print(f"Error: Unable to close the connection. {e}")
@@ -115,7 +118,7 @@ app.secret_key = 'my_secret_key'  # Change this to a secure secret key
 
 # consists of dictionaries of form {user, bot, result}
 chat_history = []
-schema_struct = None
+schema_struct = "<p>Please provide your own schema in prompt to get relevant SQL query.</p>"
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -173,11 +176,8 @@ def update_db_id():
     # Connect to the database
     if db_id != -1:
         connect_to_db(db_id)
-        x =  pd.DataFrame(preset_schemas[db_id]["df"])
-        schema_struct = tabulate(x, headers='keys', tablefmt='html')
     else:
         close_connection()
-        schema_struct = "<p>No schema set.</p>"
 
     return redirect(url_for('home'))
 

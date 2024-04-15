@@ -22,7 +22,7 @@
                         <li class="db-list-el" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
                         {% endif %}
                         {% endfor %}
-                        <li class="db-list-el" id="new-db" onclick="updateDbId('-1')">Close DB</li>
+                        <li class="db-list-el" id="new-db" onclick="updateDbId('-1')">Use General DB</li>
                     </ul>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                     <h1>LLM SQL</h1>
                 </div>
                 <div class="content-body">
-                    {% if chat_history|length == 0 %}
+                    {% if chat_history|length == 0 and db_id == -1 %}
                         <div class="welcome">
                             <h2>Welcome to LLM SQL!</h2>
                             <br>

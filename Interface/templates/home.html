@@ -1,88 +1,91 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>LLM SQL</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    </head>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        <div class="container">
-            <div class="sidebar">
-                <div class="sidebar-header">
-                    <h1>DB list</h1>
-                </div>
-                <div class="sidebar-body">
-                    <ul>
-                        {% for db in databases %}
-                        {% if db_id == db.id %}
-                        <li class="db-list-el active" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
-                        {% else %}
-                        <li class="db-list-el" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
-                        {% endif %}
-                        {% endfor %}
-                        <li class="db-list-el" id="new-db" onclick="updateDbId('-1')">Use General DB</li>
-                    </ul>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM SQL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>DB list</h1>
             </div>
-            <div class="content">
-                <div class="content-header">
-                    <h1>LLM SQL</h1>
-                </div>
-                <div class="content-body">
-                    {% if chat_history|length == 0 and db_id == -1 %}
-                        <div class="welcome">
-                            <h2>Welcome to LLM SQL!</h2>
-                            <br>
-                            <h4>Start by typing your query in the box below.</h4>
-                        </div>
+            <div class="sidebar-body">
+                <ul>
+                    {% for db in databases %}
+                    {% if db_id == db.id %}
+                    <li class="db-list-el active" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
+                    {% else %}
+                    <li class="db-list-el" id="{{db.id}}" onclick="updateDbId('{{db.id}}')">{{db.name}}</li>
                     {% endif %}
-                    <div class="chat">
-                        <div class="img dummy"></div>
-                        <div class="chat-body">
-                            <h4>Schema</h4>
-                            <p>{{ schema | safe }}</p>
-                        </div>
-                    </div>
-                    {% for chat in chat_history %}
-                        
-                        <div class="chat">
-                            <div class="img green"></div>
-                            <div class="chat-body">
-                                <h4>You</h4>
-                                <p>{{ chat.user }}</p>
-                            </div>
-                        </div>
-                        <div class="chat">
-                            <div class="img blue"></div>
-                            <div class="chat-body">
-                                <h4>LLM SQL 
-                                {% if db_id != -1 %}
-                                 : {{ databases[db_id].name }}
-                                {% endif %}
-                                </h4>
-                                <p>{{ chat.bot }}</p>
-                            </div>
-                        </div>
-                        <div class="chat">
-                            <div class="img dummy"></div>
-                            <div class="chat-body">
-                                {{ chat.result | safe }}
-                            </div>
-                        </div>
                     {% endfor %}
-                </div>
-                <div class="content-foot">
-                    <form id="form" action="{{ url_for('home') }}" method="post">
-                        <textarea id="qry-in" name="nl_query" value = "" rows="1" placeholder="Enter your query here..." autocomplete="off" oninput="autoExpand(this)"></textarea>
-                        <button id="qry-ex" type="submit">Run</button>
-                    </form>
-                    <p>developed by Heap Undercut.</p>
-                </div>
+                    <li class="db-list-el" id="new-db" onclick="updateDbId('-1')">Use General DB</li>
+                </ul>
             </div>
         </div>
+        <div class="content">
+            <div class="content-header">
+                <h1>LLM SQL</h1>
+            </div>
+            <div class="content-body">
+                {% if chat_history|length == 0 and db_id == -1 %}
+                <div class="welcome">
+                    <h2>Welcome to LLM SQL!</h2>
+                    <br>
+                    <h4>Start by typing your query in the box below.</h4>
+                </div>
+                {% endif %}
+                <div class="chat">
+                    <div class="img dummy"></div>
+                    <div class="chat-body">
+                        <h4>Schema</h4>
+                        <p>{{ schema | safe }}</p>
+                    </div>
+                </div>
+                {% for chat in chat_history %}
 
-        <script src="{{ url_for('static', filename='script.js') }}"></script>
-    </body>
-    </html>
+                <div class="chat">
+                    <div class="img green"></div>
+                    <div class="chat-body">
+                        <h4>You</h4>
+                        <p>{{ chat.user }}</p>
+                    </div>
+                </div>
+                <div class="chat">
+                    <div class="img blue"></div>
+                    <div class="chat-body">
+                        <h4>LLM SQL
+                            {% if db_id != -1 %}
+                            : {{ databases[db_id].name }}
+                            {% endif %}
+                        </h4>
+                        <p>{{ chat.bot }}</p>
+                    </div>
+                </div>
+                <div class="chat">
+                    <div class="img dummy"></div>
+                    <div class="chat-body">
+                        {{ chat.result | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="content-foot">
+                <form id="form" action="{{ url_for('home') }}" method="post">
+                    <textarea id="qry-in" name="nl_query" value="" rows="1" placeholder="Enter your query here..."
+                        autocomplete="off" oninput="autoExpand(this)"></textarea>
+                    <button id="qry-ex" type="submit">Run</button>
+                </form>
+                <p>developed by Heap Undercut.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

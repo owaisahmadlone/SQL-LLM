@@ -7,7 +7,7 @@ function autoExpand(textArea) {
     rows = Math.min(rows, 7);
 
     textArea.rows = rows;
-    
+
     document.querySelector('.content-foot').dispatchEvent(footerResizeEvent);
 }
 

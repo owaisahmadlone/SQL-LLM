@@ -5,30 +5,16 @@ from dotenv import dotenv_values
 import pandas as pd
 from tabulate import tabulate
 
-"""
-Access the environment variables for the database
-connection details. This is done to avoid hardcoding
-the credentials in the code.
-"""
-
-# Load environment variables from .env file
 env_vars = dotenv_values('../.env')
 
-# Access sensitive information
 API_TOKEN = env_vars.get("API_TOKEN")
 USER = env_vars.get("DB_USER")
 PASSWORD = env_vars.get("DB_PASSWORD")
 HOST = env_vars.get("HOST_IP")
 
-# Check if the environment variables are available
 if None in (API_TOKEN, USER, PASSWORD, HOST):
     print("Error: One or more environment variables are not set.")
     exit(1)
-
-"""
-Use the Hugging Face API to access the LLM model
-to convert natural language to SQL queries.
-"""
 
 API_URL = "https://api-inference.huggingface.co/models/barunparua/flant5-nltosql-final-model"
 headers = {"Authorization": f"Bearer {API_TOKEN}"}
@@ -37,15 +23,10 @@ def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
 
-"""
-Database selection flags
-"""
 isDBselected = False
 db_id = -1
 schema = ""
 conn = None
-
-# Preset schemas for the database
 
 preset_schemas = [
     {
@@ -54,24 +35,18 @@ preset_schemas = [
         "name": "Fest Management System",
         "schema": "ADMIN: USERNAME (PRIMARY KEY) (text); PASS (text)//STUDENT: FEST_ID (PRIMARY KEY) (numeric); NAME (text); ROLL (text); DEPT (text); PASS (text)//EVENT: EVENT_ID (PRIMARY KEY) (numeric); EVENT_NAME (text); EVENT_DATE (date); EVENT_TIME (time); EVENT_VENUE (text); EVENT_TYPE (text); EVENT_DESCRIPTION (text); EVENT_WINNER (numeric)//ACCOMODATION: ACC_ID (numeric) (PRIMARY KEY); NAME (text); CAPACITY (numeric)//EXT_PARTICIPANT: FEST_ID (numeric) (PRIMARY KEY); NAME (text); COLLEGE (text); ACC_ID (numeric); PASS (text)//ORGANISING: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//VOLUNTEERING: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//PARTICIPATING_EXT: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)//PARTICIPATING_INT: FEST_ID (numeric); EVENT_ID (numeric); PRIMARY KEY (FEST_ID, EVENT_ID)",
         "df" : [
-    {'Table': 'ADMIN', 'Attributes': ['USERNAME (PRIMARY KEY) (text)', 'PASS (text)']},
-    {'Table': 'STUDENT', 'Attributes': ['FEST_ID (PRIMARY KEY) (numeric)', 'NAME (text)', 'ROLL (text)', 'DEPT (text)', 'PASS (text)']},
-    {'Table': 'EVENT', 'Attributes': ['EVENT_ID (PRIMARY KEY) (numeric)', 'EVENT_NAME (text)', 'EVENT_DATE (date)', 'EVENT_TIME (time)', 'EVENT_VENUE (text)', 'EVENT_TYPE (text)', 'EVENT_DESCRIPTION (text)', 'EVENT_WINNER (numeric)']},
-    {'Table': 'ACCOMODATION', 'Attributes': ['ACC_ID (numeric) (PRIMARY KEY)', 'NAME (text)', 'CAPACITY (numeric)']},
-    {'Table': 'EXT_PARTICIPANT', 'Attributes': ['FEST_ID (numeric) (PRIMARY KEY)', 'NAME (text)', 'COLLEGE (text)', 'ACC_ID (numeric)', 'PASS (text)']},
-    {'Table': 'ORGANISING', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
-    {'Table': 'VOLUNTEERING', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
-    {'Table': 'PARTICIPATING_EXT', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
-    {'Table': 'PARTICIPATING_INT', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']}
-]
+            {'Table': 'ADMIN', 'Attributes': ['USERNAME (PRIMARY KEY) (text)', 'PASS (text)']},
+            {'Table': 'STUDENT', 'Attributes': ['FEST_ID (PRIMARY KEY) (numeric)', 'NAME (text)', 'ROLL (text)', 'DEPT (text)', 'PASS (text)']},
+            {'Table': 'EVENT', 'Attributes': ['EVENT_ID (PRIMARY KEY) (numeric)', 'EVENT_NAME (text)', 'EVENT_DATE (date)', 'EVENT_TIME (time)', 'EVENT_VENUE (text)', 'EVENT_TYPE (text)', 'EVENT_DESCRIPTION (text)', 'EVENT_WINNER (numeric)']},
+            {'Table': 'ACCOMODATION', 'Attributes': ['ACC_ID (numeric) (PRIMARY KEY)', 'NAME (text)', 'CAPACITY (numeric)']},
+            {'Table': 'EXT_PARTICIPANT', 'Attributes': ['FEST_ID (numeric) (PRIMARY KEY)', 'NAME (text)', 'COLLEGE (text)', 'ACC_ID (numeric)', 'PASS (text)']},
+            {'Table': 'ORGANISING', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
+            {'Table': 'VOLUNTEERING', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
+            {'Table': 'PARTICIPATING_EXT', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']},
+            {'Table': 'PARTICIPATING_INT', 'Attributes': ['FEST_ID (numeric)', 'EVENT_ID (numeric)', 'PRIMARY KEY (FEST_ID, EVENT_ID)']}
+        ]
     },
 ]
-
-"""
-psycopg2 is a PostgreSQL adapter for Python.
-It is used to connect to the database and 
-execute SQL queries.
-"""
 
 def connect_to_db(id):
     global isDBselected, schema, conn, preset_schemas, schema_struct
@@ -114,9 +89,8 @@ interact with the LLM SQL model.
 """
 
 app = Flask(__name__)
-app.secret_key = 'my_secret_key'  # Change this to a secure secret key
+app.secret_key = 'my_secret_key'
 
-# consists of dictionaries of form {user, bot, result}
 chat_history = []
 schema_struct = "<p>Please provide your own schema in prompt to get relevant SQL query.</p>"
 
